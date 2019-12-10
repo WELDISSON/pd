@@ -1,6 +1,8 @@
 import http from 'http';
 import app from './app';
 import db from './database/index';
+import env from './config/environment';
+import log from 'knoblr';
 
 const normalizePort = (val) => {
     const port = parseInt(val, 10);
@@ -10,16 +12,16 @@ const normalizePort = (val) => {
   
     return false;
   };
-const port = normalizePort("3000");
+
+const port = normalizePort(env.port || 3001);
 const server = http.createServer(app);
 
-const connectDatabase = async () => {
-  await db;
-  return server.listen(port, () => console.log(`Listening on ${port}`)); 
+const main = async () => {
+  try {
+    await db;
+    server.listen(port, () => log.info(`Listening on ${port}`)); 
+  } catch (error) {
+    log.error(error)
+  }
 }
-
-try {
-  connectDatabase()
-} catch (error) {
-  console.log(error)
-}
+main();
