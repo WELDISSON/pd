@@ -1,16 +1,46 @@
-DROP DATABASE pd;
-CREATE DATABASE pd;
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
-USE pd;
+CREATE SCHEMA IF NOT EXISTS `pd` DEFAULT CHARACTER SET utf8 ;
+USE `pd` ;
 
-CREATE TABLE `disc` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `artist` varchar(255) NOT NULL,
-  `year` varchar(255) NOT NULL,
-  `info` varchar(255) NOT NULL,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+CREATE TABLE IF NOT EXISTS `pd`.`disc` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NULL,
+  `artist` VARCHAR(45) NULL,
+  `year` VARCHAR(45) NULL,
+  `info` VARCHAR(45) NULL,
   PRIMARY KEY (`id`),
-  UNIQUE (`id`, `name`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+  INDEX `name` (`name` ASC))
+ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS `pd`.`collection` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `name` (`name` ASC))
+ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS `pd`.`discCollection` (
+  `disc_name` VARCHAR(255),
+  `collection_name` VARCHAR(255),
+  INDEX `disc_name_idx` (`disc_name` ASC),
+  INDEX `collection_name_idx` (`collection_name` ASC),
+  CONSTRAINT `disc_name`
+    FOREIGN KEY (`disc_name`)
+    REFERENCES `pd`.`disc` (`name`)
+    
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `collection_name`
+    FOREIGN KEY (`collection_name`)
+    REFERENCES `pd`.`collection` (`name`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
