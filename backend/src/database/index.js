@@ -9,7 +9,7 @@ const db = mysql.createConnection({
       database : env.db
     });
     
-db.connect((err, a, b) => {
+db.connect((err) => {
   if(err) {
     console.log(err);
     return log.error('error in connect', err);
