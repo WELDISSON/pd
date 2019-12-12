@@ -20,17 +20,24 @@ export default {
         });
     },
     deleteDiscFromCollection(req, res){
-        db.query(`DELETE FROM discCollection WHERE disc_name = ${req.params.discName}`,
+        db.query(`DELETE FROM discCollection WHERE disc_name = "${req.query.discName}"`,
         (error, results) => {
             if (error) res.status(400).send(error);
             if (results) res.status(200).send(results);
         });
     },
     getDiscsfromcollection(req, res){
-        db.query(`SELECT * FROM discCollection where collection_name like ${req.params.collectionName};`,
+        if(!req.query.collectionName){
+            return res.status(400).json({
+                error: ['collectionName is required in params']
+            });
+        }
+        db.query(`SELECT * FROM discCollection where collection_name like "${req.query.collectionName}";`,
         (error, results) => {
             if (error) res.status(400).send(error);
-            if (results) res.status(200).send(results);
+            if (results) res.status(200).send({
+                results
+            });
         });
     }
 }
